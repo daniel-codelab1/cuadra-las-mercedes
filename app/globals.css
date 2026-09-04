@@ -1,0 +1,380 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --- Tipografía (DESIGN_SYSTEM.md §3) ---------------------------------
+       Estas variables las pisa app/fonts.ts en cuanto existan los archivos de
+       Futuru y General Sans en public/fonts/. Mientras tanto el sitio cae a la
+       sans del sistema y el layout no se rompe. Ver docs/FONTS.md.          */
+    --font-display: 'Futuru', 'General Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'General Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* --- Grilla guía 20×20 (§5) ------------------------------------------
+       --cell = 1 celda cuadrada. No es un grid CSS: es la unidad de
+       proporción para dimensionar bloques (w-cell, h-cell-2, …).           */
+    --shell: 1440px;
+    --cell: calc(min(100vw, var(--shell)) / 20);
+
+    /* --- Piso de las muescas de marca ---------------------------------
+       `--cell` no tiene suelo: en un teléfono de 375px da ~19px, una décima
+       parte de los ~72px con los que está calibrado el "escalón" de bloques
+       que recorta las esquinas de las fotos (bulevar, hero, news,
+       skypark-editorial) y los botones de icono de la navbar. Ahí no es
+       espaciado que deba encogerse con la pantalla —es la marca—, así que
+       usan `cell-mark` en vez de `cell`: el mismo valor fluido, con un piso
+       de 44px (el mínimo de área táctil accesible) a partir del cual deja de
+       encoger. El resto del sitio (`gap-cell`, `px-cell`…) sigue en `--cell`
+       sin piso a propósito: los márgenes de página sí deben achicarse en
+       móvil. */
+    --cell-mark: max(2.75rem, var(--cell));
+
+    /* --- Tema claro (§6) -------------------------------------------------- */
+    --surface: #ffffff;
+    --text: #0a0a0a;
+    --text-muted: #9a9a9a; /* TODO confirmar hex exacto en Figma Inspect */
+
+    /* --- Cursor de marca ---------------------------------------------------
+       Punta de flecha sin cola, con el borde izquierdo vertical y las esquinas
+       en inglete: la misma regla de remate recto que fija `Arrow.tsx`.
+
+       La geometría importa: el tercer vértice va POR DEBAJO del centro del
+       borde vertical (13,5 sobre un recorrido de 2 a 18,5). Puesto a media
+       altura el triángulo sale simétrico y se lee como un botón de «play», no
+       como una flecha. Así el borde superior es la diagonal larga y la punta
+       queda en el ángulo de 45° de arriba a la izquierda, que es donde está el
+       punto activo.
+
+       Va por variable y no por una regla `dark:` porque el cursor se hereda
+       desde `body` y no hay forma de variantear eso por componente.
+
+       El filete de 1,5px en el color contrario NO es decorativo: el negro puro
+       desaparece sobre el footer —que es negro siempre, en los dos temas— y
+       sobre los paneles sólidos de Skypark o las fichas de proyecto. Con el
+       filete, la flecha se lee sobre cualquier fondo.
+
+       Los hex van literales porque un `data:` URI no puede leer un token; son
+       `text`, `surface` y `brand-orange` de tailwind.config.ts.             */
+    --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2L2 18.5L13.5 13.5Z' fill='%230A0A0A' stroke='%23FFFFFF' stroke-width='1.5' stroke-linejoin='miter' paint-order='stroke'/%3E%3C/svg%3E") 2 2, auto;
+    --cursor-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2L2 18.5L13.5 13.5Z' fill='%23FF8D10' stroke='%23FFFFFF' stroke-width='1.5' stroke-linejoin='miter' paint-order='stroke'/%3E%3C/svg%3E") 2 2, pointer;
+
+    /* --- Barra de scroll ---------------------------------------------------
+       El pulgar acompaña al cursor (negro en claro, blanco en oscuro) y el
+       naranja queda reservado para el estado activo, igual que en la flecha y
+       que en `::selection` / `:focus-visible`. El carril se deriva del tema con
+       `color-mix`, así que no hay un gris nuevo que mantener.               */
+    --scrollbar-track: color-mix(in srgb, var(--text) 8%, var(--surface));
+  }
+
+  .dark {
+    /* --- Tema oscuro (§6) -------------------------------------------------
+       Sólo cambian superficie y texto. Los colores de marca NO se re-mapean. */
+    --surface: #000000;
+    --text: #ffffff;
+    --text-muted: #b5b5b5; /* TODO confirmar hex exacto en Figma Inspect */
+
+    --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2L2 18.5L13.5 13.5Z' fill='%23FFFFFF' stroke='%230A0A0A' stroke-width='1.5' stroke-linejoin='miter' paint-order='stroke'/%3E%3C/svg%3E") 2 2, auto;
+    --cursor-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2L2 18.5L13.5 13.5Z' fill='%23FF8D10' stroke='%230A0A0A' stroke-width='1.5' stroke-linejoin='miter' paint-order='stroke'/%3E%3C/svg%3E") 2 2, pointer;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-surface font-sans text-body text-foreground antialiased;
+  }
+
+  /* La estética de marca es de bloques rectos: sin radios heredados. */
+  ::selection {
+    @apply bg-brand-orange text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-orange;
+  }
+
+  /* --- Cursor ------------------------------------------------------------
+     El cursor se hereda, así que basta con ponerlo en `body` y marcar aparte
+     lo que responde al clic. Se listan roles y elementos semánticos, no clases:
+     así lo hereda cualquier componente nuevo sin acordarse de nada.         */
+  body {
+    cursor: var(--cursor);
+  }
+
+  a[href],
+  button,
+  summary,
+  label[for],
+  select,
+  [role='button'],
+  [role='tab'],
+  [role='link'] {
+    cursor: var(--cursor-active);
+  }
+
+  /* Los campos de texto recuperan su cursor propio: `auto` da la barra de
+     inserción sobre un campo escribible y la flecha sobre el resto, que es
+     justo el reparto que se quiere. Sin esto heredarían la flecha de `body` y
+     no se vería dónde se escribe. */
+  input,
+  textarea,
+  [contenteditable='true'] {
+    cursor: auto;
+  }
+
+  /* --- Barra de scroll ---------------------------------------------------
+     Dos sintaxis para el mismo resultado: la estándar (Firefox, Chrome 121+) y
+     la de WebKit para lo anterior. Sin radio, como el resto de la marca.    */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--text) var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--text);
+    border-radius: 0;
+  }
+
+  /* El naranja al pasar por encima sólo llega a los motores que siguen
+     honrando las reglas `-webkit-`: en Chrome 121+ la sintaxis estándar de
+     arriba tiene precedencia y no existe un pseudo de hover para el pulgar.
+     Se queda como mejora progresiva, no como algo de lo que dependa el
+     diseño. */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-orange;
+  }
+}
+
+@layer components {
+  /* Contenedor maestro: ancho de la grilla de Figma, centrado, con aire
+     lateral de 1 celda. Toda sección debería colgar de aquí salvo las que
+     sangran a bleed completo a propósito. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-cell;
+  }
+
+  /* --- Cubo 3D -----------------------------------------------------------
+     Una caja cuadrada que gira sobre su eje Y y descubre una segunda cara, de
+     modo que parece un cubo girando y no una tarjeta que se voltea. Vive en
+     CSS y no en clases arbitrarias de Tailwind porque necesita `preserve-3d`,
+     un `translateZ` derivado del tamaño y degradación con reduced-motion.
+
+     `--cube` = lado de la caja; lo fija en línea quien lo use.
+
+     Hay dos variantes:
+       .cube-hover  el giro lo dispara CSS al pasar el ratón (botones)
+       .cube-driven el giro lo controla JS (el icono de marca de Historia)   */
+  .cube {
+    perspective: 700px;
+  }
+
+  .cube-inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--cube) / -2));
+  }
+
+  .cube-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    backface-visibility: hidden;
+    overflow: hidden;
+  }
+
+  .cube-face-front {
+    transform: translateZ(calc(var(--cube) / 2));
+  }
+
+  .cube-face-side {
+    transform: rotateY(90deg) translateZ(calc(var(--cube) / 2));
+  }
+
+  /* --- Variante por hover (botones) --- */
+  .cube-hover .cube-inner {
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .group:hover .cube-hover .cube-inner,
+  .group:focus-visible .cube-hover .cube-inner {
+    transform: translateZ(calc(var(--cube) / -2)) rotateY(-90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Sin giro: la cara frontal se queda plana y cambia de color por su propia
+       clase `group-hover:bg-*-dark`, así el hover sigue comunicando.
+       Sólo aplica a la variante por hover — la que controla JS resuelve el
+       reduced-motion en su propio código, saltando a la cara sin animarla. */
+    .cube-hover .cube-inner,
+    .group:hover .cube-hover .cube-inner,
+    .group:focus-visible .cube-hover .cube-inner {
+      transform: none;
+      transition: none;
+    }
+
+    .cube-hover .cube-face-front {
+      transform: none;
+    }
+
+    .cube-hover .cube-face-side {
+      display: none;
+    }
+  }
+
+  .emphasis-word {
+    /* Primera declaración: reserva para navegadores sin `color-mix`, donde el
+       texto se queda atenuado en vez de romperse. */
+    color: var(--text-muted);
+    /* El extremo del mix es `--emphasis-to`, no el color de texto a secas: así
+       un tramo de la frase puede llegar a un color de marca en vez de al negro,
+       sin salirse del mecanismo. Quien no la fija (la mayoría de las palabras)
+       cae al color de texto del tema por el valor de reserva de `var()`. */
+    color: color-mix(
+      in srgb,
+      var(--emphasis-to, var(--text)) calc(var(--emphasis) * 100%),
+      var(--text-muted)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .emphasis-word {
+      /* Sin barrido, el estado final directamente: los tramos de color
+         conservan el suyo en vez de quedarse todos en negro. */
+      color: var(--emphasis-to, var(--text));
+    }
+  }
+
+  /* Carril horizontal sin barra a la vista. El elemento sigue siendo un
+     contenedor de scroll de verdad —teclado, trackpad y arrastre siguen
+     funcionando—; sólo se esconde el indicador, que en un carril de tarjetas
+     compite con la franja de color. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Invitación a seguir bajando: la caja de la flecha cabecea suavemente.
+     El balanceo va en un elemento propio y el centrado en su envoltorio: los
+     dos usan `transform`, y en el mismo elemento la animación pisaría al
+     `-translate-x-1/2`. */
+  .scroll-hint {
+    animation: scroll-hint-bob 1.8s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint {
+      animation: none;
+    }
+  }
+
+  /* Cursor de escritura del titular del hero. */
+  .type-caret {
+    display: inline-block;
+    width: 0.055em;
+    height: 0.74em;
+    margin-left: 0.05em;
+    background-color: theme('colors.brand.coral.DEFAULT');
+    animation: type-caret-blink 0.9s steps(1) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .type-caret {
+      display: none;
+    }
+  }
+}
+
+/* --- Texto que se oscurece al hacer scroll --------------------------------
+   Cada palabra interpola entre el gris atenuado y el color de texto según su
+   propia `--emphasis` (0 → 1), que escribe GSAP ligada al scroll.
+
+   Se resuelve con `color-mix` sobre las variables de tema y no con opacidad:
+   así funciona igual en claro y en oscuro sin fijar ningún hex. Registrarla con
+   `@property` como `<number>` es lo que la hace interpolable de verdad; sin eso
+   el navegador la trataría como texto y saltaría de 0 a 1.                  */
+@property --emphasis {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes scroll-hint-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(28%);
+  }
+}
+
+@keyframes type-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@layer utilities {
+  /* Estado inicial de los elementos que anima useScrollReveal, y de los que
+     entran en la secuencia de intro del hero. Evita el flash del contenido
+     visible antes de que GSAP tome el control. */
+  .reveal-init {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-init {
+      opacity: 1;
+      transform: none !important;
+    }
+  }
+
+  /* Estado inicial de los tramos que dibuja useDrawLine: recortados por
+     completo desde la derecha. Mismo papel que `reveal-init`, evitar el flash
+     de la línea entera antes de que GSAP tome el control. */
+  .draw-init {
+    clip-path: inset(0% 100% 0% 0%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .draw-init {
+      clip-path: none;
+    }
+  }
+
+  /* Igual que `draw-init`, pero recortado desde los dos lados: el bloque se
+     abre desde el centro. Es el estado de partida del remate de la sección
+     "hub", donde el énfasis pide una entrada más seca que el barrido. */
+  .burst-init {
+    clip-path: inset(0% 50% 0% 50%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .burst-init {
+      clip-path: none;
+    }
+  }
+}

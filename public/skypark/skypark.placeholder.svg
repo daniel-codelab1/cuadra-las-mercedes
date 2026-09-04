@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <!-- PLACEHOLDER. Reemplazar por la foto real y actualizar
+       content/sections/skypark.ts. -->
+  <rect width="1200" height="800" fill="#C8D3D0"/>
+  <rect x="2" y="2" width="1196" height="796" fill="none" stroke="#004538"
+        stroke-width="3" stroke-dasharray="14 10" opacity="0.4"/>
+  <rect x="450" y="367" width="300" height="66" fill="#004538" opacity="0.9"/>
+  <text x="600" y="409" text-anchor="middle" fill="#FFFFFF"
+        font-family="monospace" font-size="24" letter-spacing="2">SKYPARK</text>
+</svg>

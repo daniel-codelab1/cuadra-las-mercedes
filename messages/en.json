@@ -1,0 +1,55 @@
+{
+  "Nav": {
+    "home": "Cuadra Las Mercedes — home",
+    "primary": "Main",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu"
+  },
+  "Theme": {
+    "toggle": "Switch between light and dark theme"
+  },
+  "Locale": {
+    "switchTo": "Switch to {language}",
+    "current": "Current language: {language}"
+  },
+  "Carousel": {
+    "roleDescription": "carousel",
+    "goToSlide": "View media {current} of {total}"
+  },
+  "ScrollNav": {
+    "previous": "Previous block",
+    "next": "Next block"
+  },
+  "Footer": {
+    "copyright": "© {year} Cuadra Las Mercedes. All rights reserved.",
+    "instagram": "Cuadra Las Mercedes on Instagram",
+    "linkedin": "Cuadra Las Mercedes on LinkedIn",
+    "website": "Cuadra Las Mercedes website"
+  },
+  "Metadata": {
+    "title": "Cuadra Las Mercedes",
+    "description": "Urban and commercial renewal of Las Mercedes, Caracas. Over 500 projects under development."
+  },
+  "History": {
+    "tablist": "Story sections"
+  },
+  "Projects": {
+    "previous": "Previous project",
+    "next": "Next project",
+    "floors": "{count, plural, one {# Floor} other {# Floors}}",
+    "website": "{name} website",
+    "instagram": "{name} on Instagram",
+    "linkedin": "{name} on LinkedIn"
+  },
+  "Bulevar": {
+    "scrollHint": "Scroll"
+  },
+  "Legal": {
+    "updated": "Last updated:"
+  },
+  "News": {
+    "previous": "Previous item",
+    "next": "Next item"
+  }
+}

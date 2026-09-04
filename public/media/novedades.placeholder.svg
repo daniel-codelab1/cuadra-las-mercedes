@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 450" width="1200" height="450">
+  <!-- PLACEHOLDER. Reemplazar por el asset real y actualizar
+       content/sections/history.ts. -->
+  <rect width="1200" height="450" fill="#E9E2DE"/>
+  <rect x="2" y="2" width="1196" height="446" fill="none" stroke="#D93928"
+        stroke-width="3" stroke-dasharray="16 12" opacity="0.35"/>
+  <rect x="470" y="177" width="260" height="60" fill="#D93928" opacity="0.85"/>
+  <text x="600" y="217" text-anchor="middle" fill="#FFFFFF"
+        font-family="monospace" font-size="24" letter-spacing="2">NOVEDADES</text>
+  <text x="600" y="273" text-anchor="middle" fill="#D93928" opacity="0.6"
+        font-family="monospace" font-size="18" letter-spacing="1">diseño no facilitado</text>
+</svg>

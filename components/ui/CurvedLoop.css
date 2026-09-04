@@ -1,0 +1,33 @@
+/**
+ * CurvedLoop — geometría.
+ *
+ * Vendorizado de React Bits (https://reactbits.dev/animations/curved-loop). De
+ * la hoja original se conserva sólo lo estructural. Lo que NO está aquí es
+ * deliberado:
+ *
+ *  - `min-height: 100vh` — convertía la banda en una sección de pantalla
+ *    completa. Aquí es una franja entre dos secciones y su alto lo da el SVG.
+ *  - `fill: #ffffff` — texto blanco sobre una página blanca: invisible. El
+ *    color lo pone quien lo usa, con los tokens de tema.
+ *  - `font-size: 6rem` y `font-weight: 700` — salen de la escala tipográfica.
+ */
+
+.curved-loop-jacket {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.curved-loop-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 100 / 12;
+  /* La curva se sale de la caja del viewBox a propósito: es el arco. Quien lo
+     use tiene que reservarle ese aire por arriba y por abajo. */
+  overflow: visible;
+  line-height: 1;
+  text-transform: uppercase;
+  user-select: none;
+  -webkit-user-select: none;
+}
